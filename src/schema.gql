@@ -1,0 +1,25 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type HeaderConfiguration {
+  id: Int!
+  navigations: [Navigation!]!
+}
+
+type Navigation {
+  id: Int!
+  page: String!
+  text: String!
+  url: String!
+}
+
+type Page {
+  configuration: HeaderConfiguration
+  id: Int!
+  name: String!
+}
+
+type Query {
+  pages: [Page!]!
+}

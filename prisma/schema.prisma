@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,4 +16,72 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model Header {
+  id                 Int                 @id @default(autoincrement())
+  headerSiteIdentity HeaderSiteIdentity?
+  headerMenu         HeaderMenu?
+}
+
+model HeaderSiteIdentity {
+  id    Int    @id @default(autoincrement())
+  title String @unique
+  tag   String @unique
+  logo  String @unique
+  icon  String @unique
+
+  header Header @relation(fields: [id], references: [id])
+
+  @@map("header_site_identity")
+}
+
+model HeaderMenu {
+  id          Int          @id @default(autoincrement())
+  navigations Navigation[]
+  buttons     Button[]
+
+  header Header @relation(fields: [id], references: [id])
+
+  @@map("header_menu")
+}
+
+model Navigation {
+  id    Int    @id @default(autoincrement())
+  name  Pages  @unique
+  label String @unique
+  url   String @unique
+
+  headerMenu   HeaderMenu @relation(fields: [headerMenuId], references: [id])
+  headerMenuId Int
+
+  @@map("navigations")
+}
+
+model Button {
+  id       Int          @id @default(autoincrement())
+  name     ActionButton @unique
+  text     String       @unique
+  url      String       @unique
+  isEnable Boolean      @default(false)
+
+  headerMenu   HeaderMenu @relation(fields: [headerMenuId], references: [id])
+  headerMenuId Int
+
+  @@map("buttons")
+}
+
+enum ActionButton {
+  SIGN_UP
+  LOGIN
+}
+
+enum Pages {
+  HOME
+  SELL
+  AUCTIONS
+  ABOUT
+  FAQS
+  RESULTS
+  CONTACT_US
 }
