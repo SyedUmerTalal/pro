@@ -1,0 +1,11 @@
+.vscode
+dist
+node_modules
+.dockerignore
+.eslint*
+.git*
+.prettier*
+docker-compose*
+Dockerfile*
+LICENSE
+README.md

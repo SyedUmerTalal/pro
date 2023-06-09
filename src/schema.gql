@@ -2,24 +2,108 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type HeaderConfiguration {
-  id: Int!
-  navigations: [Navigation!]!
-}
-
-type Navigation {
-  id: Int!
-  page: String!
-  text: String!
-  url: String!
-}
-
-type Page {
-  configuration: HeaderConfiguration
-  id: Int!
+type City {
+  code: String!
   name: String!
 }
 
+type Country {
+  code: String!
+  name: String!
+  cities: [City!]!
+}
+
+type User {
+  id: Int!
+  username: String!
+  email: String!
+  companyName: String!
+  firstName: String!
+  lastName: String!
+  streetAddress: String!
+  state: String!
+  postCode: String!
+  phoneNumber: String!
+  cityName: String!
+  countryName: String!
+  status: Status!
+}
+
+enum Status {
+  PENDING
+  APPROVED
+}
+
+type LoginResult {
+  accessToken: String!
+}
+
+type PlateListing {
+  isOpenForPrice: Boolean
+  settlePrice: Float
+}
+
+type Plate {
+  combination: String!
+  askingPrice: Float!
+  comments: String!
+  listingPlate: PlateListing!
+}
+
 type Query {
-  pages: [Page!]!
+  users(userFilterInput: UserFilterInput!): [User!]!
+  countries(countryArgs: CountryArgs): [Country!]!
+}
+
+input UserFilterInput {
+  id: Int
+  status: Status
+}
+
+input CountryArgs {
+  countryCode: String
+}
+
+type Mutation {
+  registerUser(registerUserInput: RegisterUserInput!): User!
+  removeUser(userDeleteArgs: UserDeleteInput!): User!
+  approveUser(userApproveArgs: UserApproveArgs!): User!
+  login(loginInput: LoginInput!): LoginResult!
+  createListingPlate(listingPlateCreateInput: ListingPlateCreateInput!): Plate!
+}
+
+input RegisterUserInput {
+  username: String!
+  email: String!
+  companyName: String!
+  firstName: String!
+  lastName: String!
+  streetAddress: String!
+  state: String!
+  postCode: String!
+  phoneNumber: String!
+  password: String!
+  cityCode: String!
+  countryCode: String!
+}
+
+input UserDeleteInput {
+  id: Int!
+}
+
+input UserApproveArgs {
+  id: Int
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input ListingPlateCreateInput {
+  combination: String!
+  askingPrice: Float!
+  comments: String!
+  isOpenForPrice: Boolean
+  settlePrice: Float = 0
 }

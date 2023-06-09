@@ -1,88 +1,104 @@
-import { ActionButton, Pages, PrismaClient } from '@prisma/client';
-
+import { PlatePurpose, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-
 async function main() {
-  const header = await prisma.header.upsert({
-    where: { id: 1 },
+  const australia = await prisma.country.upsert({
+    where: { code: 'AU' },
     update: {},
     create: {
-      headerSiteIdentity: {
-        create: {
-          title: 'title',
-          tag: 'tag',
-          icon: 'icon',
-          logo: 'logo',
-        },
-      },
-      headerMenu: {
-        create: {
-          navigations: {
-            createMany: {
-              data: [
-                {
-                  name: Pages.HOME,
-                  label: 'HOME',
-                  url: 'https://www.signature.com/home',
-                },
-                {
-                  name: Pages.ABOUT,
-                  label: 'ABOUT',
-                  url: 'https://www.signature.com/about',
-                },
-                {
-                  name: Pages.FAQS,
-                  label: 'FAQs',
-                  url: 'https://www.signature.com/faq',
-                },
-                {
-                  name: Pages.AUCTIONS,
-                  label: 'AUCTIONS',
-                  url: 'https://www.signature.com/auction',
-                },
-                {
-                  name: Pages.RESULTS,
-                  label: 'RESULTS',
-                  url: 'https://www.signature.com/results',
-                },
-                {
-                  name: Pages.SELL,
-                  label: 'SELL',
-                  url: 'https://www.signature.com/sell',
-                },
-                {
-                  name: Pages.CONTACT_US,
-                  label: 'CONTACT US',
-                  url: 'https://www.signature.com/contact-us',
-                },
-              ],
+      code: 'AU',
+      name: 'Australia',
+      cities: {
+        createMany: {
+          data: [
+            {
+              code: '00001',
+              name: 'Melbourne',
             },
-          },
-          buttons: {
-            createMany: {
-              data: [
-                {
-                  name: ActionButton.SIGN_UP,
-                  text: 'REGISTER',
-                  url: 'https://www.signature.com/register',
-                  isEnable: true,
-                },
-                {
-                  name: ActionButton.LOGIN,
-                  text: 'LOGIN',
-                  url: 'https://www.signature.com/login',
-                },
-              ],
+            {
+              code: '00002',
+              name: 'Sydney',
             },
-          },
+            {
+              code: '00003',
+              name: 'Richmond',
+            },
+          ],
         },
       },
     },
   });
 
-  console.log({ header });
-}
+  const pakistan = await prisma.country.upsert({
+    where: { code: 'PK' },
+    update: {},
+    create: {
+      code: 'PK',
+      name: 'Pakistan',
+      cities: {
+        createMany: {
+          data: [
+            {
+              code: '00004',
+              name: 'Karachi',
+            },
+            {
+              code: '00005',
+              name: 'Lahore',
+            },
+            {
+              code: '00006',
+              name: 'Islamabad',
+            },
+          ],
+        },
+      },
+    },
+  });
 
+  const listingPlate = await prisma.plate.upsert({
+    where: { combination: 'ABC-01' },
+    update: {},
+    create: {
+      combination: 'ABC-01',
+      askingPrice: 2500,
+      purpose: PlatePurpose.LISTING,
+      comments: 'fake listing plate',
+      ListingPlate: {
+        create: {
+          isOpenForPrice: true,
+        },
+      },
+      user: {
+        connect: {
+          username: 'dummyUser1ww23',
+        },
+      },
+    },
+  });
+
+  const auctionPlate = await prisma.plate.upsert({
+    where: { combination: 'XYZ-01' },
+    update: {},
+    create: {
+      combination: 'XYZ-01',
+      askingPrice: 3500,
+      purpose: PlatePurpose.AUCTION,
+      comments: 'fake auction plate',
+      AuctionPlate: {
+        create: {
+          isReserve: true,
+        },
+      },
+      user: {
+        connect: {
+          username: 'dummyUser123',
+        },
+      },
+    },
+  });
+
+  console.log({ australia, pakistan, listingPlate, auctionPlate });
+}
 main()
   .then(async () => {
     await prisma.$disconnect();

@@ -8,80 +8,96 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement()) @map("user_id")
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement()) @map("user_id")
+  username      String   @unique
+  email         String   @unique
+  password      String
+  firstName     String   @map("first_name")
+  lastName      String   @map("last_name")
+  companyName   String?  @map("company_name")
+  streetAddress String   @map("street_address")
+  state         String
+  postCode      String   @map("post_code")
+  phoneNumber   String   @unique @map("phone_number")
+  cityCode      String   @map("city_code")
+  countryCode   String   @map("country_code")
+  status        Status   @default(PENDING)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  country Country @relation(fields: [countryCode], references: [code])
+  city    City    @relation(fields: [cityCode], references: [code])
+  Plate   Plate[]
 
   @@map("users")
 }
 
-model Header {
-  id                 Int                 @id @default(autoincrement())
-  headerSiteIdentity HeaderSiteIdentity?
-  headerMenu         HeaderMenu?
+model Country {
+  code String @unique
+  name String @unique
+
+  cities City[]
+  users  User[]
+
+  @@id([code, name])
+  @@map("countries")
 }
 
-model HeaderSiteIdentity {
-  id    Int    @id @default(autoincrement())
-  title String @unique
-  tag   String @unique
-  logo  String @unique
-  icon  String @unique
+model City {
+  code        String @unique
+  name        String @unique
+  countryCode String @map("country_code")
 
-  header Header @relation(fields: [id], references: [id])
+  country Country @relation(fields: [countryCode], references: [code])
+  users   User[]
 
-  @@map("header_site_identity")
+  @@id([code, name])
+  @@map("cities")
 }
 
-model HeaderMenu {
+enum Status {
+  PENDING
+  APPROVED
+}
+
+model Plate {
   id          Int          @id @default(autoincrement())
-  navigations Navigation[]
-  buttons     Button[]
+  combination String       @unique
+  askingPrice Decimal      @default(0) @map("asking_price") @db.Decimal(18, 2)
+  comments    String?
+  purpose     PlatePurpose
+  userId      Int          @map("user_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
-  header Header @relation(fields: [id], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
-  @@map("header_menu")
+  ListingPlate ListingPlate?
+  AuctionPlate AuctionPlate?
+
+  @@map("plates")
 }
 
-model Navigation {
-  id    Int    @id @default(autoincrement())
-  name  Pages  @unique
-  label String @unique
-  url   String @unique
+model ListingPlate {
+  id             Int     @id @default(autoincrement())
+  isOpenForPrice Boolean @default(false) @map("open_for_price")
+  settlePrice    Decimal @default(0) @map("settle_price") @db.Decimal(18, 2)
 
-  headerMenu   HeaderMenu @relation(fields: [headerMenuId], references: [id])
-  headerMenuId Int
+  plate Plate @relation(fields: [id], references: [id])
 
-  @@map("navigations")
+  @@map("listing_plates")
 }
 
-model Button {
-  id       Int          @id @default(autoincrement())
-  name     ActionButton @unique
-  text     String       @unique
-  url      String       @unique
-  isEnable Boolean      @default(false)
+model AuctionPlate {
+  id        Int     @id @default(autoincrement())
+  isReserve Boolean @default(false) @map("is_reserve")
 
-  headerMenu   HeaderMenu @relation(fields: [headerMenuId], references: [id])
-  headerMenuId Int
+  plate Plate @relation(fields: [id], references: [id])
 
-  @@map("buttons")
+  @@map("auction_plates")
 }
 
-enum ActionButton {
-  SIGN_UP
-  LOGIN
-}
-
-enum Pages {
-  HOME
-  SELL
-  AUCTIONS
-  ABOUT
-  FAQS
-  RESULTS
-  CONTACT_US
+enum PlatePurpose {
+  LISTING
+  AUCTION
 }

@@ -3,6 +3,8 @@ import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { LoginInput } from './dto/login.input';
+import { LoginResult } from './model/login-result.model';
 
 @Injectable()
 export class AuthService {
@@ -11,9 +13,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findByEmail(email);
-    if (user && (await bcrypt.compare(password, user.password))) {
+  async validateUser(loginInput: LoginInput) {
+    const user = await this.userService.findOneByEmail(loginInput.email);
+    if (user && (await bcrypt.compare(loginInput.password, user.password))) {
       delete user.password;
       delete user.createdAt;
       delete user.updatedAt;
@@ -23,10 +25,12 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User) {
-    const payload = { username: user.username, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
+  login(user: User) {
+    const payload = { sub: user.id, email: user.email };
+    const result: LoginResult = {
+      accessToken: this.jwtService.sign(payload),
     };
+
+    return result;
   }
 }
