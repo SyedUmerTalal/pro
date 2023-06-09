@@ -19,6 +19,10 @@ import { PlateModule } from './plate/plate.module';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+      buildSchemaOptions: {
+        noDuplicatedFields: true,
+      },
     }),
     CountryModule,
     PlateModule,

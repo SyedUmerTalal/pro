@@ -8,91 +8,32 @@ type City {
 }
 
 type Country {
+  cities: [City!]!
   code: String!
   name: String!
-  cities: [City!]!
-}
-
-type User {
-  id: Int!
-  username: String!
-  email: String!
-  companyName: String!
-  firstName: String!
-  lastName: String!
-  streetAddress: String!
-  state: String!
-  postCode: String!
-  phoneNumber: String!
-  cityName: String!
-  countryName: String!
-  status: Status!
-}
-
-enum Status {
-  PENDING
-  APPROVED
-}
-
-type LoginResult {
-  accessToken: String!
-}
-
-type PlateListing {
-  isOpenForPrice: Boolean
-  settlePrice: Float
-}
-
-type Plate {
-  combination: String!
-  askingPrice: Float!
-  comments: String!
-  listingPlate: PlateListing!
-}
-
-type Query {
-  users(userFilterInput: UserFilterInput!): [User!]!
-  countries(countryArgs: CountryArgs): [Country!]!
-}
-
-input UserFilterInput {
-  id: Int
-  status: Status
 }
 
 input CountryArgs {
   countryCode: String
 }
 
-type Mutation {
-  registerUser(registerUserInput: RegisterUserInput!): User!
-  removeUser(userDeleteArgs: UserDeleteInput!): User!
-  approveUser(userApproveArgs: UserApproveArgs!): User!
-  login(loginInput: LoginInput!): LoginResult!
-  createListingPlate(listingPlateCreateInput: ListingPlateCreateInput!): Plate!
+input CreateAuctionPlateInput {
+  askingPrice: Float!
+  combination: String!
+  comments: String!
+  isReserve: Boolean
 }
 
-input RegisterUserInput {
-  username: String!
-  email: String!
-  companyName: String!
-  firstName: String!
-  lastName: String!
-  streetAddress: String!
-  state: String!
-  postCode: String!
-  phoneNumber: String!
-  password: String!
-  cityCode: String!
-  countryCode: String!
+input CreateListingPlateInput {
+  askingPrice: Float!
+  combination: String!
+  comments: String!
+  isOpenForPrice: Boolean
+  settlePrice: Float = 0
 }
 
-input UserDeleteInput {
-  id: Int!
-}
-
-input UserApproveArgs {
-  id: Int
+input FilterPlateInput {
+  status: Status!
 }
 
 input LoginInput {
@@ -100,10 +41,107 @@ input LoginInput {
   password: String!
 }
 
-input ListingPlateCreateInput {
-  combination: String!
+type LoginResult {
+  accessToken: String!
+}
+
+type Mutation {
+  approveUser(userApproveArgs: UserApproveArgs!): User!
+  createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): PlateAuction!
+  createListingPlate(createListingPlateInput: CreateListingPlateInput!): PlateListing!
+  login(loginInput: LoginInput!): LoginResult!
+  registerUser(registerUserInput: RegisterUserInput!): User!
+  removeUser(userDeleteArgs: UserDeleteInput!): User!
+  updatePlateStatus(updateStatusPlateInput: UpdateStatusPlateInput!): Plate!
+}
+
+interface Plate {
   askingPrice: Float!
+  combination: String!
   comments: String!
+  status: Status!
+  user: User!
+}
+
+type PlateAuction implements Plate {
+  askingPrice: Float!
+  combination: String!
+  comments: String!
+  id: Int!
+  isReserve: Boolean
+  status: Status!
+  user: User!
+}
+
+type PlateListing implements Plate {
+  askingPrice: Float!
+  combination: String!
+  comments: String!
+  id: Int!
   isOpenForPrice: Boolean
-  settlePrice: Float = 0
+  settlePrice: Float
+  status: Status!
+  user: User!
+}
+
+type Query {
+  countries(countryArgs: CountryArgs): [Country!]!
+  plate(id: Float!): Plate!
+  plates(filterPlateInput: FilterPlateInput!): [Plate!]!
+  users(userFilterInput: UserFilterInput!): [User!]!
+}
+
+input RegisterUserInput {
+  cityCode: String!
+  companyName: String!
+  countryCode: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  phoneNumber: String!
+  postCode: String!
+  state: String!
+  streetAddress: String!
+  username: String!
+}
+
+enum Status {
+  APPROVED
+  DECLINE
+  PENDING
+}
+
+input UpdateStatusPlateInput {
+  id: Int!
+  status: Status!
+}
+
+type User {
+  cityName: String!
+  companyName: String!
+  countryName: String!
+  email: String!
+  firstName: String!
+  id: Int!
+  lastName: String!
+  phoneNumber: String!
+  postCode: String!
+  state: String!
+  status: Status!
+  streetAddress: String!
+  username: String!
+}
+
+input UserApproveArgs {
+  id: Int
+}
+
+input UserDeleteInput {
+  id: Int!
+}
+
+input UserFilterInput {
+  id: Int
+  status: Status
 }

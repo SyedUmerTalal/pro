@@ -58,6 +58,7 @@ model City {
 enum Status {
   PENDING
   APPROVED
+  DECLINE
 }
 
 model Plate {
@@ -67,6 +68,7 @@ model Plate {
   comments    String?
   purpose     PlatePurpose
   userId      Int          @map("user_id")
+  status      Status       @default(PENDING)
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 

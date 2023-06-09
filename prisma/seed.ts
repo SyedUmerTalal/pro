@@ -70,7 +70,7 @@ async function main() {
       },
       user: {
         connect: {
-          username: 'dummyUser1ww23',
+          username: 'sarmaghan',
         },
       },
     },
@@ -91,7 +91,7 @@ async function main() {
       },
       user: {
         connect: {
-          username: 'dummyUser123',
+          username: 'sarmaghan',
         },
       },
     },

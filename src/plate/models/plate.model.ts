@@ -1,5 +1,6 @@
-import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { Field, Float, InterfaceType, registerEnumType } from '@nestjs/graphql';
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -7,9 +8,21 @@ import {
   IsString,
 } from 'class-validator';
 import PlateListing from './plate-listing.model';
+import PlateAuction from './plate-auction.model';
+import { User } from 'src/user/model/user.model';
+import { Status } from '@prisma/client';
 
-@ObjectType()
-export default class Plate {
+@InterfaceType({
+  resolveType(plate) {
+    if (plate.ListingPlate?.id) {
+      return PlateListing;
+    } else {
+      return PlateAuction;
+    }
+  },
+  isAbstract: true,
+})
+export default abstract class Plate {
   @Field()
   @IsNotEmpty()
   @IsString()
@@ -26,6 +39,16 @@ export default class Plate {
   @IsString()
   comments: string;
 
-  @Field(() => PlateListing)
-  listingPlate: PlateListing;
+  @Field(() => Status)
+  @IsEnum(Status)
+  @IsNotEmpty()
+  readonly status: Status;
+
+  @Field(() => User)
+  @IsNotEmpty()
+  user: User;
 }
+
+registerEnumType(Status, {
+  name: 'Status',
+});

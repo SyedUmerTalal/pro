@@ -1,19 +1,33 @@
-import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import Plate from './plate.model';
 import {
-  IsBoolean,
+  ValidateIf,
   IsNotEmpty,
+  IsBoolean,
   IsNumber,
   Min,
-  ValidateIf,
 } from 'class-validator';
+import { User } from 'src/user/model/user.model';
+import { Status } from '@prisma/client';
 
-@ObjectType()
-export default class PlateListing {
-  @Field({ nullable: true })
+@ObjectType({
+  implements: () => [Plate],
+})
+export default class PlateListing implements Plate {
+  status: Status;
+  user: User;
+  combination: string;
+  askingPrice: number;
+  comments: string;
+
+  @Field(() => Int)
+  readonly id: number;
+
+  @Field(() => Boolean, { nullable: true })
   @ValidateIf((dto) => typeof dto.settlePrice === 'undefined')
   @IsNotEmpty()
   @IsBoolean()
-  isOpenForPrice?: boolean;
+  readonly isOpenForPrice?: boolean | null;
 
   @Field(() => Float, { nullable: true, defaultValue: 0 })
   @ValidateIf((dto) => typeof dto.isOpenForPrice === 'undefined')
