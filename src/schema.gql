@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input ApproveAuctionPlateInput {
+  endAt: DateTime!
+  id: Int
+  startingPrice: Float! = 0
+}
+
+input ApproveListingPlateInput {
+  id: Int
+}
+
 type City {
   code: String!
   name: String!
@@ -21,7 +31,7 @@ input CreateAuctionPlateInput {
   askingPrice: Float!
   combination: String!
   comments: String!
-  isReserve: Boolean
+  isReserve: Boolean!
 }
 
 input CreateListingPlateInput {
@@ -32,8 +42,17 @@ input CreateListingPlateInput {
   settlePrice: Float = 0
 }
 
-input FilterPlateInput {
-  status: Status!
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DeclinePlateInput {
+  id: Int
+}
+
+input FindPlateInput {
+  id: Int!
 }
 
 input LoginInput {
@@ -46,48 +65,44 @@ type LoginResult {
 }
 
 type Mutation {
+  approveAuctionPlate(approveAuctionPlateInput: ApproveAuctionPlateInput!): Plate!
+  approveListingPlate(approveListingPlate: ApproveListingPlateInput!): Plate!
   approveUser(userApproveArgs: UserApproveArgs!): User!
-  createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): PlateAuction!
-  createListingPlate(createListingPlateInput: CreateListingPlateInput!): PlateListing!
+  createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): Plate!
+  createListingPlate(createListingPlateInput: CreateListingPlateInput!): Plate!
+  declinePlate(declinePlateInput: DeclinePlateInput!): Plate!
   login(loginInput: LoginInput!): LoginResult!
   registerUser(registerUserInput: RegisterUserInput!): User!
   removeUser(userDeleteArgs: UserDeleteInput!): User!
-  updatePlateStatus(updateStatusPlateInput: UpdateStatusPlateInput!): Plate!
 }
 
-interface Plate {
+type Plate {
   askingPrice: Float!
   combination: String!
   comments: String!
-  status: Status!
-  user: User!
-}
-
-type PlateAuction implements Plate {
-  askingPrice: Float!
-  combination: String!
-  comments: String!
+  detail: PlateUnion
   id: Int!
-  isReserve: Boolean
   status: Status!
   user: User!
 }
 
-type PlateListing implements Plate {
-  askingPrice: Float!
-  combination: String!
-  comments: String!
+type PlateAuction {
+  id: Int!
+  isReserve: Boolean!
+}
+
+type PlateListing {
   id: Int!
   isOpenForPrice: Boolean
   settlePrice: Float
-  status: Status!
-  user: User!
 }
+
+union PlateUnion = PlateAuction | PlateListing
 
 type Query {
   countries(countryArgs: CountryArgs): [Country!]!
-  plate(id: Float!): Plate!
-  plates(filterPlateInput: FilterPlateInput!): [Plate!]!
+  plate(findPlateInput: FindPlateInput!): Plate!
+  plates: [Plate!]!
   users(userFilterInput: UserFilterInput!): [User!]!
 }
 
@@ -110,11 +125,6 @@ enum Status {
   APPROVED
   DECLINE
   PENDING
-}
-
-input UpdateStatusPlateInput {
-  id: Int!
-  status: Status!
 }
 
 type User {

@@ -1,5 +1,4 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
-import Plate from './plate.model';
 import {
   ValidateIf,
   IsNotEmpty,
@@ -7,19 +6,9 @@ import {
   IsNumber,
   Min,
 } from 'class-validator';
-import { User } from 'src/user/model/user.model';
-import { Status } from '@prisma/client';
 
-@ObjectType({
-  implements: () => [Plate],
-})
-export default class PlateListing implements Plate {
-  status: Status;
-  user: User;
-  combination: string;
-  askingPrice: number;
-  comments: string;
-
+@ObjectType()
+export default class PlateListing {
   @Field(() => Int)
   readonly id: number;
 

@@ -28,6 +28,7 @@ model User {
   country Country @relation(fields: [countryCode], references: [code])
   city    City    @relation(fields: [cityCode], references: [code])
   Plate   Plate[]
+  Bid     Bid[]
 
   @@map("users")
 }
@@ -74,8 +75,8 @@ model Plate {
 
   user User @relation(fields: [userId], references: [id])
 
-  ListingPlate ListingPlate?
-  AuctionPlate AuctionPlate?
+  listingPlate ListingPlate?
+  auctionPlate AuctionPlate?
 
   @@map("plates")
 }
@@ -91,10 +92,10 @@ model ListingPlate {
 }
 
 model AuctionPlate {
-  id        Int     @id @default(autoincrement())
-  isReserve Boolean @default(false) @map("is_reserve")
-
-  plate Plate @relation(fields: [id], references: [id])
+  id        Int      @id @default(autoincrement())
+  isReserve Boolean  @default(false) @map("is_reserve")
+  Plate     Plate?   @relation(fields: [id], references: [id])
+  Auction   Auction?
 
   @@map("auction_plates")
 }
@@ -102,4 +103,29 @@ model AuctionPlate {
 enum PlatePurpose {
   LISTING
   AUCTION
+}
+
+model Auction {
+  id            Int      @id @default(autoincrement())
+  plateId       Int      @unique @map("plate_id")
+  startingPrice Decimal  @default(0) @map("starting_price") @db.Decimal(18, 2)
+  endAt         DateTime @map("end_at")
+
+  auctionPlate AuctionPlate @relation(fields: [plateId], references: [id])
+
+  bids Bid[]
+
+  @@map("auctions")
+}
+
+model Bid {
+  id     Int     @id @default(autoincrement())
+  price  Decimal
+  userId Int
+
+  user      User     @relation(fields: [userId], references: [id])
+  Auction   Auction? @relation(fields: [auctionId], references: [id])
+  auctionId Int?
+
+  @@map("bids")
 }

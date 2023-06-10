@@ -63,7 +63,7 @@ async function main() {
       askingPrice: 2500,
       purpose: PlatePurpose.LISTING,
       comments: 'fake listing plate',
-      ListingPlate: {
+      listingPlate: {
         create: {
           isOpenForPrice: true,
         },
@@ -84,7 +84,7 @@ async function main() {
       askingPrice: 3500,
       purpose: PlatePurpose.AUCTION,
       comments: 'fake auction plate',
-      AuctionPlate: {
+      auctionPlate: {
         create: {
           isReserve: true,
         },
