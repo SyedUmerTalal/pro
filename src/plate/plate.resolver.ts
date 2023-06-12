@@ -79,11 +79,8 @@ export class PlateResolver {
   }
 
   @Mutation(() => Plate)
-  approveListingPlate(
-    @Args('approveListingPlate')
-    approveListingPlateInput: ApproveListingPlateInput,
-  ) {
-    return this.plateService.approveListing({ approveListingPlateInput });
+  approveListingPlate(@Args('where') findPlateInput: FindPlateInput) {
+    return this.plateService.approveListing(findPlateInput);
   }
 
   @Mutation(() => Plate)

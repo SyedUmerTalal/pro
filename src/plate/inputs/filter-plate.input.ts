@@ -3,5 +3,5 @@ import Plate from '../models/plate.model';
 
 @InputType()
 export default class FilterPlateInput extends PartialType(
-  PickType(Plate, ['purpose'] as const, InputType),
+  PickType(Plate, ['purpose', 'status'] as const, InputType),
 ) {}

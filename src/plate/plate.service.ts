@@ -98,25 +98,14 @@ export class PlateService {
     });
   }
 
-  approveListing({
-    approveListingPlateInput,
-  }: {
-    approveListingPlateInput: ApproveListingPlate;
-  }) {
-    const plateInclude: Prisma.PlateInclude = {
-      plateListing: true,
-      user: true,
-    };
-
-    const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput =
-      approveListingPlateInput;
+  approveListing(findPlateInput: FindPlateInput) {
+    const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput = findPlateInput;
 
     const plateUpdateInput: Prisma.PlateUpdateInput = {
       status: Status.APPROVED,
     };
 
     return this.prismaService.plate.update({
-      include: plateInclude,
       where: plateWhereUniqueInput,
       data: plateUpdateInput,
     });

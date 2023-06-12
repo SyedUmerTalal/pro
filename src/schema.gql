@@ -2,11 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input ApproveListingPlateInput {
-  combination: String
-  id: Int
-}
-
 type City {
   code: String!
   name: String!
@@ -50,6 +45,7 @@ input DeclinePlateInput {
 
 input FilterPlateInput {
   purpose: PlatePurpose
+  status: Status
 }
 
 input FilterUserInput {
@@ -78,7 +74,7 @@ type LoginResult {
 
 type Mutation {
   approveAuctionPlate(data: CreateAuctionInput!, where: FindPlateInput!): Plate!
-  approveListingPlate(approveListingPlate: ApproveListingPlateInput!): Plate!
+  approveListingPlate(where: FindPlateInput!): Plate!
   approveUser(where: FindUserInput!): User!
   createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): Plate!
   createListingPlate(createListingPlateInput: CreateListingPlateInput!): Plate!

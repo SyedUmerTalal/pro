@@ -1,11 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import {
-  IsPositive,
-  IsNotEmpty,
-  IsNumber,
-  IsDate,
-  MinDate,
-} from 'class-validator';
+import { IsPositive, IsNotEmpty, IsNumber, IsDate } from 'class-validator';
 
 @InputType()
 export default class CreateAuctionInput {
