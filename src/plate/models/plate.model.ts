@@ -3,7 +3,6 @@ import {
   Float,
   HideField,
   Int,
-  InterfaceType,
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
@@ -16,10 +15,8 @@ import {
   IsString,
 } from 'class-validator';
 import { User } from 'src/user/model/user.model';
-import { Status } from '@prisma/client';
+import { PlatePurpose, Status } from '@prisma/client';
 import { PlateUnion } from './plate.union';
-import PlateListing from './plate-listing.model';
-import PlateAuction from './plate-auction.model';
 
 @ObjectType()
 export default class Plate {
@@ -48,15 +45,17 @@ export default class Plate {
   @IsNotEmpty()
   readonly status: Status;
 
+  @HideField()
+  readonly userId: number;
+
+  @Field(() => PlatePurpose)
+  @IsNotEmpty()
+  @IsEnum(PlatePurpose)
+  readonly purpose: PlatePurpose;
+
   @Field(() => User)
   @IsNotEmpty()
   readonly user: User;
-
-  @HideField()
-  readonly listingPlate: PlateListing;
-
-  @HideField()
-  readonly auctionPlate: PlateAuction;
 
   @Field(() => PlateUnion, { nullable: true })
   readonly detail?: typeof PlateUnion;
@@ -64,4 +63,8 @@ export default class Plate {
 
 registerEnumType(Status, {
   name: 'Status',
+});
+
+registerEnumType(PlatePurpose, {
+  name: 'PlatePurpose',
 });

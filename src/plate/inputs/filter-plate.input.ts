@@ -1,11 +1,7 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { Status } from '@prisma/client';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { InputType, PartialType, PickType } from '@nestjs/graphql';
+import Plate from '../models/plate.model';
 
 @InputType()
-export default class FilterPlateInput {
-  @Field(() => Status)
-  @IsEnum(Status)
-  @IsNotEmpty()
-  readonly status: Status;
-}
+export default class FilterPlateInput extends PartialType(
+  PickType(Plate, ['purpose'] as const, InputType),
+) {}

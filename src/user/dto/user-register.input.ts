@@ -5,7 +5,7 @@ import { User } from '../model/user.model';
 @InputType()
 export class RegisterUserInput extends OmitType(
   User,
-  ['city', 'cityName', 'country', 'countryName', 'id', 'status'] as const,
+  ['city', 'country', 'id', 'status'] as const,
   InputType,
 ) {
   @Field()

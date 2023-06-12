@@ -17,14 +17,27 @@ import FindPlateInput from './inputs/find-plate.input';
 import DeclinePlateInput from './inputs/decline-plate-input';
 import ApproveListingPlateInput from './inputs/approve-listing-plate.input';
 import ApproveAuctionPlateInput from './inputs/approve-auction_plate.input';
+import { UserService } from 'src/user/user.service';
+import { PlatePurpose } from '@prisma/client';
+import PlateListingService from './services/plate-listing.service';
+import PlateAuctionService from './services/plate-auction.service';
+import FilterPlateInput from './inputs/filter-plate.input';
+import CreateAuctionInput from './inputs/create-auction.input';
 
 @Resolver(() => Plate)
 export class PlateResolver {
-  constructor(private readonly plateService: PlateService) {}
+  constructor(
+    private readonly plateService: PlateService,
+    private readonly userService: UserService,
+    private readonly plateListingService: PlateListingService,
+    private readonly plateAuctionService: PlateAuctionService,
+  ) {}
 
   @Query(() => [Plate], { name: 'plates' })
-  findAllPlates() {
-    return this.plateService.findAll();
+  findAllPlates(
+    @Args('where', { nullable: true }) filterPlateInput: FilterPlateInput,
+  ) {
+    return this.plateService.findAll(filterPlateInput);
   }
 
   @Query(() => Plate, { name: 'plate' })
@@ -75,18 +88,26 @@ export class PlateResolver {
 
   @Mutation(() => Plate)
   approveAuctionPlate(
-    @Args('approveAuctionPlateInput')
-    approveAuctionPlateInput: ApproveAuctionPlateInput,
+    @Args('where') findPlateInput: FindPlateInput,
+    @Args('data') createAuctionInput: CreateAuctionInput,
   ) {
-    return this.plateService.approveAuctionPlate({ approveAuctionPlateInput });
+    return this.plateService.approveAuctionPlate(
+      findPlateInput,
+      createAuctionInput,
+    );
+  }
+
+  @ResolveField()
+  user(@Parent() plate: Plate) {
+    return this.userService.findOne({ id: plate.userId });
   }
 
   @ResolveField()
   detail(@Parent() plate: Plate) {
-    if (plate.listingPlate?.id) {
-      return plate.listingPlate;
+    if (plate.purpose === PlatePurpose.LISTING) {
+      return this.plateListingService.findOne(plate.id);
     } else {
-      return plate.auctionPlate;
+      return this.plateAuctionService.findOne(plate.id);
     }
   }
 }

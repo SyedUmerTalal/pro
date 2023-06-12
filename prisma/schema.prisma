@@ -75,29 +75,29 @@ model Plate {
 
   user User @relation(fields: [userId], references: [id])
 
-  listingPlate ListingPlate?
-  auctionPlate AuctionPlate?
+  plateListing PlateListing?
+  plateAuction PlateAuction?
 
   @@map("plates")
 }
 
-model ListingPlate {
+model PlateListing {
   id             Int     @id @default(autoincrement())
   isOpenForPrice Boolean @default(false) @map("open_for_price")
   settlePrice    Decimal @default(0) @map("settle_price") @db.Decimal(18, 2)
 
   plate Plate @relation(fields: [id], references: [id])
 
-  @@map("listing_plates")
+  @@map("plates_listings")
 }
 
-model AuctionPlate {
+model PlateAuction {
   id        Int      @id @default(autoincrement())
   isReserve Boolean  @default(false) @map("is_reserve")
   Plate     Plate?   @relation(fields: [id], references: [id])
   Auction   Auction?
 
-  @@map("auction_plates")
+  @@map("plates_auctions")
 }
 
 enum PlatePurpose {
@@ -111,7 +111,7 @@ model Auction {
   startingPrice Decimal  @default(0) @map("starting_price") @db.Decimal(18, 2)
   endAt         DateTime @map("end_at")
 
-  auctionPlate AuctionPlate @relation(fields: [plateId], references: [id])
+  plateAuction PlateAuction @relation(fields: [plateId], references: [id])
 
   bids Bid[]
 

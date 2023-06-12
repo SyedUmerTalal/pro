@@ -2,13 +2,8 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input ApproveAuctionPlateInput {
-  endAt: DateTime!
-  id: Int
-  startingPrice: Float! = 0
-}
-
 input ApproveListingPlateInput {
+  combination: String
   id: Int
 }
 
@@ -23,8 +18,9 @@ type Country {
   name: String!
 }
 
-input CountryArgs {
-  countryCode: String
+input CreateAuctionInput {
+  endAt: DateTime!
+  startingPrice: Float! = 0
 }
 
 input CreateAuctionPlateInput {
@@ -48,11 +44,27 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 input DeclinePlateInput {
+  combination: String
   id: Int
 }
 
+input FilterPlateInput {
+  purpose: PlatePurpose
+}
+
+input FilterUserInput {
+  status: Status
+}
+
 input FindPlateInput {
-  id: Int!
+  combination: String
+  id: Int
+}
+
+input FindUserInput {
+  email: String
+  id: Int
+  username: String
 }
 
 input LoginInput {
@@ -65,15 +77,15 @@ type LoginResult {
 }
 
 type Mutation {
-  approveAuctionPlate(approveAuctionPlateInput: ApproveAuctionPlateInput!): Plate!
+  approveAuctionPlate(data: CreateAuctionInput!, where: FindPlateInput!): Plate!
   approveListingPlate(approveListingPlate: ApproveListingPlateInput!): Plate!
-  approveUser(userApproveArgs: UserApproveArgs!): User!
+  approveUser(where: FindUserInput!): User!
   createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): Plate!
   createListingPlate(createListingPlateInput: CreateListingPlateInput!): Plate!
   declinePlate(declinePlateInput: DeclinePlateInput!): Plate!
   login(loginInput: LoginInput!): LoginResult!
-  registerUser(registerUserInput: RegisterUserInput!): User!
-  removeUser(userDeleteArgs: UserDeleteInput!): User!
+  registerUser(data: RegisterUserInput!): User!
+  removeUser(where: FindUserInput!): User!
 }
 
 type Plate {
@@ -82,6 +94,7 @@ type Plate {
   comments: String!
   detail: PlateUnion
   id: Int!
+  purpose: PlatePurpose!
   status: Status!
   user: User!
 }
@@ -97,13 +110,19 @@ type PlateListing {
   settlePrice: Float
 }
 
+enum PlatePurpose {
+  AUCTION
+  LISTING
+}
+
 union PlateUnion = PlateAuction | PlateListing
 
 type Query {
-  countries(countryArgs: CountryArgs): [Country!]!
+  countries(countryCode: String): [Country!]!
   plate(findPlateInput: FindPlateInput!): Plate!
-  plates: [Plate!]!
-  users(userFilterInput: UserFilterInput!): [User!]!
+  plates(where: FilterPlateInput): [Plate!]!
+  user(where: FindUserInput!): User
+  users(where: FilterUserInput): [User!]!
 }
 
 input RegisterUserInput {
@@ -128,9 +147,9 @@ enum Status {
 }
 
 type User {
-  cityName: String!
+  city: String!
   companyName: String!
-  countryName: String!
+  country: String!
   email: String!
   firstName: String!
   id: Int!
@@ -141,17 +160,4 @@ type User {
   status: Status!
   streetAddress: String!
   username: String!
-}
-
-input UserApproveArgs {
-  id: Int
-}
-
-input UserDeleteInput {
-  id: Int!
-}
-
-input UserFilterInput {
-  id: Int
-  status: Status
 }

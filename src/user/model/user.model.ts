@@ -5,7 +5,7 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { City, Status } from '@prisma/client';
+import { Status } from '@prisma/client';
 import {
   IsEmail,
   IsEnum,
@@ -13,7 +13,6 @@ import {
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
-import { Country } from 'src/country/entities/country.entity';
 
 @ObjectType()
 export class User {
@@ -70,12 +69,12 @@ export class User {
   @Field()
   @IsNotEmpty()
   @IsString()
-  cityName: string;
+  city: string;
 
   @Field()
   @IsNotEmpty()
   @IsString()
-  countryName: string;
+  country: string;
 
   @Field(() => Status)
   @IsNotEmpty()
@@ -83,10 +82,10 @@ export class User {
   status: Status;
 
   @HideField()
-  country: Country;
+  cityCode: string;
 
   @HideField()
-  city: City;
+  countryCode: string;
 }
 
 registerEnumType(Status, {

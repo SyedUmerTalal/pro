@@ -14,7 +14,9 @@ export class AuthService {
   ) {}
 
   async validateUser(loginInput: LoginInput) {
-    const user = await this.userService.findOneByEmail(loginInput.email);
+    const user = await this.userService.findApprovedOne({
+      email: loginInput.email,
+    });
     if (user && (await bcrypt.compare(loginInput.password, user.password))) {
       delete user.password;
       delete user.createdAt;

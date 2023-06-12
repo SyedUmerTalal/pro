@@ -9,43 +9,53 @@ import {
 import { User } from './model/user.model';
 import { UserService } from './user.service';
 import { RegisterUserInput } from './dto/user-register.input';
-import { UserDeleteInput } from './dto/user-delete.input';
-import { UserFilterInput } from './dto/user-filter.input';
-import { UserApproveArgs } from './dto/user-approve.input';
+import FilterUserInput from './dto/filter-user.input';
+import { CityService } from 'src/common/services/city.service';
+import { CountryService } from 'src/country/country.service';
+import FindUserInput from './dto/find-user.input';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly cityService: CityService,
+    private readonly countryService: CountryService,
+  ) {}
 
   @Mutation(() => User)
-  registerUser(
-    @Args('registerUserInput') registerUserInput: RegisterUserInput,
-  ) {
+  registerUser(@Args('data') registerUserInput: RegisterUserInput) {
     return this.userService.create(registerUserInput);
   }
 
   @Query(() => [User], { name: 'users' })
-  findAll(@Args('userFilterInput') userFilterInput: UserFilterInput) {
-    return this.userService.findAllByStatus(userFilterInput);
+  findAll(@Args('where', { nullable: true }) filterUserInput: FilterUserInput) {
+    return this.userService.findAll(filterUserInput);
+  }
+
+  @Query(() => User, { name: 'user', nullable: true })
+  findOne(@Args('where') findUserInput: FindUserInput) {
+    return this.userService.findOne(findUserInput);
   }
 
   @Mutation(() => User)
-  removeUser(@Args('userDeleteArgs') userDeleteArgs: UserDeleteInput) {
-    return this.userService.remove(userDeleteArgs);
+  removeUser(@Args('where') findUserInput: FindUserInput) {
+    return this.userService.remove(findUserInput);
   }
 
   @Mutation(() => User)
-  approveUser(@Args('userApproveArgs') userApproveArgs: UserApproveArgs) {
-    return this.userService.approve(userApproveArgs);
+  approveUser(@Args('where') findUserInput: FindUserInput) {
+    return this.userService.approve(findUserInput);
   }
 
   @ResolveField()
-  cityName(@Parent() user: User) {
-    return user.city.name;
+  async city(@Parent() user: User) {
+    const city = await this.cityService.findOne(user.cityCode);
+    return city.name;
   }
 
   @ResolveField()
-  countryName(@Parent() user: User) {
-    return user.country.name;
+  async country(@Parent() user: User) {
+    const country = await this.countryService.findOne(user.countryCode);
+    return country.name;
   }
 }

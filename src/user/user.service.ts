@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/common/prisma.service';
+import { PrismaService } from 'src/common/services/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterUserInput } from './dto/user-register.input';
 import { Prisma, Status } from '@prisma/client';
-import { UserDeleteInput } from './dto/user-delete.input';
-import { UserApproveArgs } from './dto/user-approve.input';
-import { UserFilterInput } from './dto/user-filter.input';
+import FilterUserInput from './dto/filter-user.input';
+import FindUserInput from './dto/find-user.input';
 
 @Injectable()
 export class UserService {
@@ -19,50 +18,33 @@ export class UserService {
       saltOrRounds,
     );
 
-    const userInclude: Prisma.UserInclude = {
-      country: true,
-      city: true,
-    };
-
     const userCreateInput = {
       ...registerUserInput,
       password: hashedPassword,
     };
 
     return this.prismaService.user.create({
-      include: userInclude,
       data: userCreateInput,
     });
   }
 
-  async findAllByStatus(UserFilterInput: UserFilterInput) {
-    const userInclude: Prisma.UserInclude = {
-      country: true,
-      city: true,
-    };
-
-    const userWhereInput: Prisma.UserWhereInput = {
-      OR: [
-        {
-          status: UserFilterInput.status,
-        },
-        {
-          id: UserFilterInput.id,
-        },
-      ],
-    };
-
+  async findAll(filterUserInput: FilterUserInput) {
     return this.prismaService.user.findMany({
-      include: userInclude,
-      where: userWhereInput,
+      where: filterUserInput,
     });
   }
 
-  async findOneByEmail(email: string) {
+  async findOne(findUserInput: FindUserInput) {
+    return this.prismaService.user.findUnique({
+      where: findUserInput,
+    });
+  }
+
+  findApprovedOne({ ...findUserInput }: FindUserInput) {
     const userWhereInput: Prisma.UserWhereInput = {
       AND: [
         {
-          email: email,
+          OR: findUserInput,
         },
         {
           status: Status.APPROVED,
@@ -75,39 +57,19 @@ export class UserService {
     });
   }
 
-  async remove(deleteUserInput: UserDeleteInput) {
-    const userInclude: Prisma.UserInclude = {
-      country: true,
-      city: true,
-    };
-
-    const userWhereInput: Prisma.UserWhereUniqueInput = {
-      id: deleteUserInput.id,
-    };
-
+  async remove(findUserInput: FindUserInput) {
     return await this.prismaService.user.delete({
-      include: userInclude,
-      where: userWhereInput,
+      where: findUserInput,
     });
   }
 
-  async approve(userApproveArgs: UserApproveArgs) {
-    const userInclude: Prisma.UserInclude = {
-      country: true,
-      city: true,
-    };
-
-    const userWhereUniqueInput: Prisma.UserWhereUniqueInput = {
-      id: userApproveArgs.id,
-    };
-
+  async approve(findUserInput: FindUserInput) {
     const userUpdateInput: Prisma.UserUpdateInput = {
       status: Status.APPROVED,
     };
 
     return await this.prismaService.user.update({
-      where: userWhereUniqueInput,
-      include: userInclude,
+      where: findUserInput,
       data: userUpdateInput,
     });
   }

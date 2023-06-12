@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/common/prisma.service';
+import { PrismaService } from 'src/common/services/prisma.service';
 import { PlatePurpose, Prisma, Status } from '@prisma/client';
 import CreateAuctionPlateInput from './inputs/create-auction-plate.input';
 import CreateListingPlateInput from './inputs/create-listing-plate.input';
-import UpdateStatusPlateInput from './inputs/update-status-plate.input';
-import FilterPlateInput from './inputs/filter-plate.input';
 import FindPlateInput from './inputs/find-plate.input';
 import DeclinePlateInput from './inputs/decline-plate-input';
 import ApproveListingPlate from './inputs/approve-listing-plate.input';
 import ApproveAuctionPlateInput from './inputs/approve-auction_plate.input';
+import FilterPlateInput from './inputs/filter-plate.input';
+import CreateAuctionInput from './inputs/create-auction.input';
 
 @Injectable()
 export class PlateService {
@@ -19,16 +19,16 @@ export class PlateService {
     userId: number,
   ) {
     const plateInclude: Prisma.PlateInclude = {
-      listingPlate: true,
+      plateListing: true,
       user: true,
     };
 
-    const listingPlate: Prisma.PlateCreateWithoutAuctionPlateInput = {
+    const listingPlate: Prisma.PlateCreateWithoutPlateAuctionInput = {
       combination: createListingPlateInput.combination,
       askingPrice: createListingPlateInput.askingPrice,
       comments: createListingPlateInput.comments,
       purpose: PlatePurpose.LISTING,
-      listingPlate: {
+      plateListing: {
         create: {
           isOpenForPrice: createListingPlateInput.isOpenForPrice,
           settlePrice: createListingPlateInput.settlePrice,
@@ -52,16 +52,16 @@ export class PlateService {
     userId: number,
   ) {
     const plateInclude: Prisma.PlateInclude = {
-      auctionPlate: true,
+      plateAuction: true,
       user: true,
     };
 
-    const auctionPlate: Prisma.PlateCreateWithoutListingPlateInput = {
+    const auctionPlate: Prisma.PlateCreateWithoutPlateListingInput = {
       combination: createAuctionPlateInput.combination,
       askingPrice: createAuctionPlateInput.askingPrice,
       comments: createAuctionPlateInput.comments,
       purpose: PlatePurpose.AUCTION,
-      auctionPlate: {
+      plateAuction: {
         create: {
           isReserve: createAuctionPlateInput.isReserve,
         },
@@ -79,22 +79,14 @@ export class PlateService {
     });
   }
 
-  async findAll() {
-    const plateInclude: Prisma.PlateInclude = {
-      auctionPlate: true,
-      listingPlate: true,
-      user: true,
-    };
-
-    return this.prismaService.plate.findMany({
-      include: plateInclude,
-    });
+  async findAll(filterPlateInput: FilterPlateInput) {
+    return this.prismaService.plate.findMany({ where: filterPlateInput });
   }
 
   findOne({ findPlateInput }: { findPlateInput: FindPlateInput }) {
     const plateInclude: Prisma.PlateInclude = {
-      auctionPlate: true,
-      listingPlate: true,
+      plateAuction: true,
+      plateListing: true,
       user: true,
     };
 
@@ -112,7 +104,7 @@ export class PlateService {
     approveListingPlateInput: ApproveListingPlate;
   }) {
     const plateInclude: Prisma.PlateInclude = {
-      listingPlate: true,
+      plateListing: true,
       user: true,
     };
 
@@ -132,8 +124,8 @@ export class PlateService {
 
   decline({ declinePlateInput }: { declinePlateInput: DeclinePlateInput }) {
     const plateInclude: Prisma.PlateInclude = {
-      auctionPlate: true,
-      listingPlate: true,
+      plateAuction: true,
+      plateListing: true,
       user: true,
     };
 
@@ -151,36 +143,24 @@ export class PlateService {
     });
   }
 
-  approveAuctionPlate({
-    approveAuctionPlateInput,
-  }: {
-    approveAuctionPlateInput: ApproveAuctionPlateInput;
-  }) {
-    const plateInclude: Prisma.PlateInclude = {
-      auctionPlate: true,
-      user: true,
-    };
-
-    const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput = {
-      id: approveAuctionPlateInput.id,
-    };
+  approveAuctionPlate(
+    findPlateInput: FindPlateInput,
+    createAuctionInput: CreateAuctionInput,
+  ) {
+    const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput = findPlateInput;
 
     const plateUpdateInput: Prisma.PlateUpdateInput = {
       status: Status.APPROVED,
-      auctionPlate: {
+      plateAuction: {
         update: {
           Auction: {
-            create: {
-              startingPrice: approveAuctionPlateInput.startingPrice,
-              endAt: approveAuctionPlateInput.endAt,
-            },
+            create: createAuctionInput,
           },
         },
       },
     };
 
     return this.prismaService.plate.update({
-      include: plateInclude,
       where: plateWhereUniqueInput,
       data: plateUpdateInput,
     });

@@ -1,5 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { City } from './city.entity';
+import City from './city.model';
 
 @ObjectType()
 export class Country {
