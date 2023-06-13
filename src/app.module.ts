@@ -8,6 +8,7 @@ import { join } from 'path';
 import { CountryModule } from './country/country.module';
 import { ApolloDriver } from '@nestjs/apollo';
 import { PlateModule } from './plate/plate.module';
+import { AuctionModule } from './auction/auction.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PlateModule } from './plate/plate.module';
     }),
     CountryModule,
     PlateModule,
+    AuctionModule,
   ],
 })
 export class AppModule {}

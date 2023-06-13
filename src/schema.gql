@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auction {
+  endAt: DateTime!
+  id: Int!
+  startingPrice: Float!
+}
+
 type City {
   code: String!
   name: String!
@@ -96,6 +102,7 @@ type Plate {
 }
 
 type PlateAuction {
+  auction: Auction
   id: Int!
   isReserve: Boolean!
 }

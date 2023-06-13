@@ -84,17 +84,8 @@ export class PlateService {
   }
 
   findOne({ findPlateInput }: { findPlateInput: FindPlateInput }) {
-    const plateInclude: Prisma.PlateInclude = {
-      plateAuction: true,
-      plateListing: true,
-      user: true,
-    };
-
-    const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput = findPlateInput;
-
     return this.prismaService.plate.findUnique({
-      include: plateInclude,
-      where: plateWhereUniqueInput,
+      where: findPlateInput,
     });
   }
 

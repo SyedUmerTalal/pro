@@ -15,8 +15,6 @@ import CreateAuctionPlateInput from './inputs/create-auction-plate.input';
 import Plate from './models/plate.model';
 import FindPlateInput from './inputs/find-plate.input';
 import DeclinePlateInput from './inputs/decline-plate-input';
-import ApproveListingPlateInput from './inputs/approve-listing-plate.input';
-import ApproveAuctionPlateInput from './inputs/approve-auction_plate.input';
 import { UserService } from 'src/user/user.service';
 import { PlatePurpose } from '@prisma/client';
 import PlateListingService from './services/plate-listing.service';

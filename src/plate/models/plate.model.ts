@@ -17,6 +17,7 @@ import {
 import { User } from 'src/user/model/user.model';
 import { PlatePurpose, Status } from '@prisma/client';
 import { PlateUnion } from './plate.union';
+import Auction from 'src/auction/model/auction.model';
 
 @ObjectType()
 export default class Plate {
