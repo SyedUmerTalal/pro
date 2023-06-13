@@ -8,27 +8,28 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement()) @map("user_id")
-  username      String   @unique
-  email         String   @unique
+  id            Int        @id @default(autoincrement()) @map("user_id")
+  username      String     @unique
+  email         String     @unique
   password      String
-  firstName     String   @map("first_name")
-  lastName      String   @map("last_name")
-  companyName   String?  @map("company_name")
-  streetAddress String   @map("street_address")
+  firstName     String     @map("first_name")
+  lastName      String     @map("last_name")
+  companyName   String?    @map("company_name")
+  streetAddress String     @map("street_address")
   state         String
-  postCode      String   @map("post_code")
-  phoneNumber   String   @unique @map("phone_number")
-  cityCode      String   @map("city_code")
-  countryCode   String   @map("country_code")
-  status        Status   @default(PENDING)
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  postCode      String     @map("post_code")
+  phoneNumber   String     @unique @map("phone_number")
+  cityCode      String     @map("city_code")
+  countryCode   String     @map("country_code")
+  status        UserStatus @default(PENDING)
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
 
   country Country @relation(fields: [countryCode], references: [code])
   city    City    @relation(fields: [cityCode], references: [code])
   Plate   Plate[]
   Bid     Bid[]
+  Offer   Offer[]
 
   @@map("users")
 }
@@ -56,12 +57,6 @@ model City {
   @@map("cities")
 }
 
-enum Status {
-  PENDING
-  APPROVED
-  DECLINE
-}
-
 model Plate {
   id          Int          @id @default(autoincrement())
   combination String       @unique
@@ -69,7 +64,7 @@ model Plate {
   comments    String?
   purpose     PlatePurpose
   userId      Int          @map("user_id")
-  status      Status       @default(PENDING)
+  status      PlateStatus  @default(PENDING)
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
@@ -86,7 +81,8 @@ model PlateListing {
   isOpenForPrice Boolean @default(false) @map("open_for_price")
   settlePrice    Decimal @default(0) @map("settle_price") @db.Decimal(18, 2)
 
-  plate Plate @relation(fields: [id], references: [id])
+  plate  Plate   @relation(fields: [id], references: [id])
+  offers Offer[]
 
   @@map("plates_listings")
 }
@@ -130,4 +126,41 @@ model Bid {
   Auction Auction @relation(fields: [auctionId], references: [id])
 
   @@map("bids")
+}
+
+model Offer {
+  id             Int         @id @default(autoincrement())
+  price          Decimal     @db.Decimal(18, 2)
+  userId         Int         @map("user_id")
+  plateListingId Int         @map("plate_listing_id")
+  status         OfferStatus @default(PENDING)
+  counter        Decimal     @default(0) @db.Decimal(18, 2)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  user         User         @relation(fields: [userId], references: [id])
+  PlateListing PlateListing @relation(fields: [plateListingId], references: [id])
+
+  @@index([status])
+  @@map("offers")
+}
+
+enum OfferStatus {
+  PENDING
+  APPROVE
+  DECLINE
+  COUNTER
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  DECLINE
+}
+
+enum PlateStatus {
+  PENDING
+  APPROVED
+  DECLINE
+  SOLD
 }

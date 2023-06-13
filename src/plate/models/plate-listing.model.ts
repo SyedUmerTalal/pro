@@ -5,7 +5,9 @@ import {
   IsBoolean,
   IsNumber,
   Min,
+  IsArray,
 } from 'class-validator';
+import Offer from 'src/offer/object/offer.object';
 
 @ObjectType()
 export default class PlateListing {
@@ -24,4 +26,8 @@ export default class PlateListing {
   @Min(0)
   @IsNotEmpty()
   settlePrice?: number;
+
+  @Field(() => [Offer])
+  @IsArray()
+  offers: Offer[];
 }

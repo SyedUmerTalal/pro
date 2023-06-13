@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/services/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterUserInput } from './dto/user-register.input';
-import { Prisma, Status } from '@prisma/client';
+import { Prisma, UserStatus } from '@prisma/client';
 import FilterUserInput from './dto/filter-user.input';
 import FindUserInput from './dto/find-user.input';
 
@@ -47,7 +47,7 @@ export class UserService {
           OR: findUserInput,
         },
         {
-          status: Status.APPROVED,
+          status: UserStatus.APPROVED,
         },
       ],
     };
@@ -65,7 +65,7 @@ export class UserService {
 
   async approve(findUserInput: FindUserInput) {
     const userUpdateInput: Prisma.UserUpdateInput = {
-      status: Status.APPROVED,
+      status: UserStatus.APPROVED,
     };
 
     return await this.prismaService.user.update({

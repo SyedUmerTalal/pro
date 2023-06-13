@@ -7,6 +7,8 @@ import PlateListingService from './services/plate-listing.service';
 import PlateAuctionService from './services/plate-auction.service';
 import { AuctionService } from 'src/auction/auction.service';
 import PlateAuctionResolver from './resolvers/plate-auction.resolver';
+import { OfferService } from 'src/offer/offer.service';
+import PlateListingResolver from './resolvers/plate-listing.resolver';
 
 @Module({
   providers: [
@@ -18,6 +20,8 @@ import PlateAuctionResolver from './resolvers/plate-auction.resolver';
     PlateListingService,
     PlateAuctionService,
     AuctionService,
+    OfferService,
+    PlateListingResolver,
   ],
 })
 export class PlateModule {}

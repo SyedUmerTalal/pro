@@ -15,7 +15,7 @@ import {
   IsString,
 } from 'class-validator';
 import { User } from 'src/user/model/user.model';
-import { PlatePurpose, Status } from '@prisma/client';
+import { PlatePurpose, PlateStatus } from '@prisma/client';
 import { PlateUnion } from './plate.union';
 
 @ObjectType()
@@ -40,10 +40,10 @@ export default class Plate {
   @IsString()
   readonly comments: string;
 
-  @Field(() => Status)
-  @IsEnum(Status)
+  @Field(() => PlateStatus)
+  @IsEnum(PlateStatus)
   @IsNotEmpty()
-  readonly status: Status;
+  readonly status: PlateStatus;
 
   @HideField()
   readonly userId: number;
@@ -61,8 +61,8 @@ export default class Plate {
   readonly detail?: typeof PlateUnion;
 }
 
-registerEnumType(Status, {
-  name: 'Status',
+registerEnumType(PlateStatus, {
+  name: 'PlateStatus',
 });
 
 registerEnumType(PlatePurpose, {

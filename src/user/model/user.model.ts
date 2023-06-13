@@ -5,7 +5,7 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { Status } from '@prisma/client';
+import { UserStatus } from '@prisma/client';
 import {
   IsEmail,
   IsEnum,
@@ -76,10 +76,10 @@ export class User {
   @IsString()
   country: string;
 
-  @Field(() => Status)
+  @Field(() => UserStatus)
   @IsNotEmpty()
-  @IsEnum(Status)
-  status: Status;
+  @IsEnum(UserStatus)
+  status: UserStatus;
 
   @HideField()
   cityCode: string;
@@ -88,6 +88,6 @@ export class User {
   countryCode: string;
 }
 
-registerEnumType(Status, {
-  name: 'Status',
+registerEnumType(UserStatus, {
+  name: 'UserStatus',
 });

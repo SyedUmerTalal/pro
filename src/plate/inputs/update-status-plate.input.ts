@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Status } from '@prisma/client';
+import { PlateStatus } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { Int } from 'type-graphql';
 
@@ -11,8 +11,8 @@ export default class UpdateStatusPlateInput {
   @IsNumber()
   id: number;
 
-  @Field(() => Status)
-  @IsEnum(Status)
+  @Field(() => PlateStatus)
+  @IsEnum(PlateStatus)
   @IsNotEmpty()
-  status: Status;
+  status: PlateStatus;
 }

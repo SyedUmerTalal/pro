@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/common/services/prisma.service';
-import { PlatePurpose, Prisma, Status } from '@prisma/client';
+import { PlatePurpose, Prisma, PlateStatus } from '@prisma/client';
 import CreateAuctionPlateInput from './inputs/create-auction-plate.input';
 import CreateListingPlateInput from './inputs/create-listing-plate.input';
 import FindPlateInput from './inputs/find-plate.input';
@@ -91,7 +91,7 @@ export class PlateService {
     const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput = findPlateInput;
 
     const plateUpdateInput: Prisma.PlateUpdateInput = {
-      status: Status.APPROVED,
+      status: PlateStatus.APPROVED,
     };
 
     return this.prismaService.plate.update({
@@ -111,7 +111,7 @@ export class PlateService {
       declinePlateInput;
 
     const plateUpdateInput: Prisma.PlateUpdateInput = {
-      status: Status.DECLINE,
+      status: PlateStatus.DECLINE,
     };
 
     return this.prismaService.plate.update({
@@ -128,7 +128,7 @@ export class PlateService {
     const plateWhereUniqueInput: Prisma.PlateWhereUniqueInput = findPlateInput;
 
     const plateUpdateInput: Prisma.PlateUpdateInput = {
-      status: Status.APPROVED,
+      status: PlateStatus.APPROVED,
       plateAuction: {
         update: {
           Auction: {

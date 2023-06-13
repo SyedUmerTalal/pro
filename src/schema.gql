@@ -53,6 +53,11 @@ input CreateListingPlateInput {
   settlePrice: Float = 0
 }
 
+input CreateOfferInput {
+  plateListingId: Int!
+  price: Float!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -70,11 +75,15 @@ input FilterBidInput {
 
 input FilterPlateInput {
   purpose: PlatePurpose
-  status: Status
+  status: PlateStatus
 }
 
 input FilterUserInput {
-  status: Status
+  status: UserStatus
+}
+
+input FindOfferInput {
+  id: Int!
 }
 
 input FindPlateInput {
@@ -104,10 +113,28 @@ type Mutation {
   createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): Plate!
   createBid(data: CreateBidInput!): Bid!
   createListingPlate(createListingPlateInput: CreateListingPlateInput!): Plate!
+  createOffer(data: CreateOfferInput!): Offer!
   declinePlate(declinePlateInput: DeclinePlateInput!): Plate!
   login(loginInput: LoginInput!): LoginResult!
   registerUser(data: RegisterUserInput!): User!
   removeUser(where: FindUserInput!): User!
+  updateOffer(data: UpdateOfferInput!, where: FindOfferInput!): Offer!
+}
+
+type Offer {
+  counter: Float!
+  currentOffer: Float!
+  id: Int!
+  price: Float!
+  status: OfferStatus!
+  user: User!
+}
+
+enum OfferStatus {
+  APPROVE
+  COUNTER
+  DECLINE
+  PENDING
 }
 
 type Plate {
@@ -117,7 +144,7 @@ type Plate {
   detail: PlateUnion
   id: Int!
   purpose: PlatePurpose!
-  status: Status!
+  status: PlateStatus!
   user: User!
 }
 
@@ -130,12 +157,20 @@ type PlateAuction {
 type PlateListing {
   id: Int!
   isOpenForPrice: Boolean
+  offers: [Offer!]!
   settlePrice: Float
 }
 
 enum PlatePurpose {
   AUCTION
   LISTING
+}
+
+enum PlateStatus {
+  APPROVED
+  DECLINE
+  PENDING
+  SOLD
 }
 
 union PlateUnion = PlateAuction | PlateListing
@@ -164,10 +199,9 @@ input RegisterUserInput {
   username: String!
 }
 
-enum Status {
-  APPROVED
-  DECLINE
-  PENDING
+input UpdateOfferInput {
+  counter: Float
+  status: OfferStatus
 }
 
 type User {
@@ -181,7 +215,13 @@ type User {
   phoneNumber: String!
   postCode: String!
   state: String!
-  status: Status!
+  status: UserStatus!
   streetAddress: String!
   username: String!
+}
+
+enum UserStatus {
+  APPROVED
+  DECLINE
+  PENDING
 }
