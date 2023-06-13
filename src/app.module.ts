@@ -9,6 +9,7 @@ import { CountryModule } from './country/country.module';
 import { ApolloDriver } from '@nestjs/apollo';
 import { PlateModule } from './plate/plate.module';
 import { AuctionModule } from './auction/auction.module';
+import { BidModule } from './bid/bid.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AuctionModule } from './auction/auction.module';
     CountryModule,
     PlateModule,
     AuctionModule,
+    BidModule,
   ],
 })
 export class AppModule {}

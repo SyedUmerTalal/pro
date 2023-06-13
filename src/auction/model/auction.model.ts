@@ -1,5 +1,12 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
-import { IsNumber, IsPositive, IsNotEmpty, IsDate } from 'class-validator';
+import {
+  IsNumber,
+  IsPositive,
+  IsNotEmpty,
+  IsDate,
+  IsArray,
+} from 'class-validator';
+import Bid from 'src/bid/model/bid.model';
 
 @ObjectType()
 export default class Auction {
@@ -18,4 +25,8 @@ export default class Auction {
   @IsDate()
   @IsNotEmpty()
   endAt: Date;
+
+  @Field(() => [Bid])
+  @IsArray()
+  bids: Bid[];
 }

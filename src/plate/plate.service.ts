@@ -5,8 +5,6 @@ import CreateAuctionPlateInput from './inputs/create-auction-plate.input';
 import CreateListingPlateInput from './inputs/create-listing-plate.input';
 import FindPlateInput from './inputs/find-plate.input';
 import DeclinePlateInput from './inputs/decline-plate-input';
-import ApproveListingPlate from './inputs/approve-listing-plate.input';
-import ApproveAuctionPlateInput from './inputs/approve-auction_plate.input';
 import FilterPlateInput from './inputs/filter-plate.input';
 import CreateAuctionInput from './inputs/create-auction.input';
 

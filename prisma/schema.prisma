@@ -119,13 +119,15 @@ model Auction {
 }
 
 model Bid {
-  id     Int     @id @default(autoincrement())
-  price  Decimal
-  userId Int
+  id        Int       @id @default(autoincrement())
+  price     Decimal   @db.Decimal(18, 2)
+  userId    Int
+  auctionId Int
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
-  user      User     @relation(fields: [userId], references: [id])
-  Auction   Auction? @relation(fields: [auctionId], references: [id])
-  auctionId Int?
+  user    User    @relation(fields: [userId], references: [id])
+  Auction Auction @relation(fields: [auctionId], references: [id])
 
   @@map("bids")
 }

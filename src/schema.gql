@@ -3,9 +3,18 @@
 # ------------------------------------------------------
 
 type Auction {
+  bids: [Bid!]!
   endAt: DateTime!
   id: Int!
   startingPrice: Float!
+}
+
+type Bid {
+  createdAt: DateTime!
+  currentBid: Float
+  id: Int!
+  price: Int!
+  user: User!
 }
 
 type City {
@@ -31,6 +40,11 @@ input CreateAuctionPlateInput {
   isReserve: Boolean!
 }
 
+input CreateBidInput {
+  auctionId: Int!
+  price: Int! = 0
+}
+
 input CreateListingPlateInput {
   askingPrice: Float!
   combination: String!
@@ -47,6 +61,11 @@ scalar DateTime
 input DeclinePlateInput {
   combination: String
   id: Int
+}
+
+input FilterBidInput {
+  auctionId: Int
+  userId: Int!
 }
 
 input FilterPlateInput {
@@ -83,6 +102,7 @@ type Mutation {
   approveListingPlate(where: FindPlateInput!): Plate!
   approveUser(where: FindUserInput!): User!
   createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): Plate!
+  createBid(data: CreateBidInput!): Bid!
   createListingPlate(createListingPlateInput: CreateListingPlateInput!): Plate!
   declinePlate(declinePlateInput: DeclinePlateInput!): Plate!
   login(loginInput: LoginInput!): LoginResult!
@@ -122,6 +142,7 @@ union PlateUnion = PlateAuction | PlateListing
 
 type Query {
   countries(countryCode: String): [Country!]!
+  findAllBids(where: FilterBidInput!): [Bid!]!
   plate(findPlateInput: FindPlateInput!): Plate!
   plates(where: FilterPlateInput): [Plate!]!
   user(where: FindUserInput!): User
