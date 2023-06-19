@@ -1,27 +1,25 @@
 import { Module } from '@nestjs/common';
-import { PlateService } from './plate.service';
-import { PlateResolver } from './plate.resolver';
+import { PlateResolver } from './resolvers/plate.resolver';
 import { PrismaService } from 'src/common/services/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { AuctionService } from 'src/auction/auction.service';
+import { OfferService } from 'src/offer/offer.service';
+import { PlateService } from './services/plate.service';
+import { PlateController } from './plate.controller';
 import PlateListingService from './services/plate-listing.service';
 import PlateAuctionService from './services/plate-auction.service';
-import { AuctionService } from 'src/auction/auction.service';
-import PlateAuctionResolver from './resolvers/plate-auction.resolver';
-import { OfferService } from 'src/offer/offer.service';
-import PlateListingResolver from './resolvers/plate-listing.resolver';
 
 @Module({
   providers: [
     PlateResolver,
-    PlateAuctionResolver,
     PlateService,
     PrismaService,
     UserService,
-    PlateListingService,
-    PlateAuctionService,
     AuctionService,
     OfferService,
-    PlateListingResolver,
+    PlateListingService,
+    PlateAuctionService,
   ],
+  controllers: [PlateController],
 })
 export class PlateModule {}

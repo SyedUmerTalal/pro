@@ -6,7 +6,6 @@ type Auction {
   bids: [Bid!]!
   endAt: DateTime!
   id: Int!
-  startingPrice: Float!
 }
 
 type Bid {
@@ -30,27 +29,12 @@ type Country {
 
 input CreateAuctionInput {
   endAt: DateTime!
-  startingPrice: Float! = 0
-}
-
-input CreateAuctionPlateInput {
-  askingPrice: Float!
-  combination: String!
-  comments: String!
-  isReserve: Boolean!
+  plateId: Int!
 }
 
 input CreateBidInput {
   auctionId: Int!
   price: Int! = 0
-}
-
-input CreateListingPlateInput {
-  askingPrice: Float!
-  combination: String!
-  comments: String!
-  isOpenForPrice: Boolean
-  settlePrice: Float = 0
 }
 
 input CreateOfferInput {
@@ -63,19 +47,19 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input DeclinePlateInput {
-  combination: String
-  id: Int
-}
-
 input FilterBidInput {
   auctionId: Int
   userId: Int!
 }
 
 input FilterPlateInput {
+  characterCount: Int
+  high: Int
+  low: Int
+  pattern: String
   purpose: PlatePurpose
   status: PlateStatus
+  term: String
 }
 
 input FilterUserInput {
@@ -87,8 +71,7 @@ input FindOfferInput {
 }
 
 input FindPlateInput {
-  combination: String
-  id: Int
+  id: Int!
 }
 
 input FindUserInput {
@@ -107,18 +90,15 @@ type LoginResult {
 }
 
 type Mutation {
-  approveAuctionPlate(data: CreateAuctionInput!, where: FindPlateInput!): Plate!
-  approveListingPlate(where: FindPlateInput!): Plate!
   approveUser(where: FindUserInput!): User!
-  createAuctionPlate(createAuctionPlateInput: CreateAuctionPlateInput!): Plate!
+  createAuction(data: CreateAuctionInput!): Auction!
   createBid(data: CreateBidInput!): Bid!
-  createListingPlate(createListingPlateInput: CreateListingPlateInput!): Plate!
   createOffer(data: CreateOfferInput!): Offer!
-  declinePlate(declinePlateInput: DeclinePlateInput!): Plate!
+  deletePlate(where: FindPlateInput!): Plate!
   login(loginInput: LoginInput!): LoginResult!
-  registerUser(data: RegisterUserInput!): User!
   removeUser(where: FindUserInput!): User!
   updateOffer(data: UpdateOfferInput!, where: FindOfferInput!): Offer!
+  updatePlate(data: UpdatePlateInput!, where: FindPlateInput!): Plate!
 }
 
 type Offer {
@@ -140,11 +120,13 @@ enum OfferStatus {
 type Plate {
   askingPrice: Float!
   combination: String!
-  comments: String!
+  comments: String
   detail: PlateUnion
   id: Int!
+  numberPlate: String!
   purpose: PlatePurpose!
   status: PlateStatus!
+  updatedAt: DateTime
   user: User!
 }
 
@@ -156,9 +138,9 @@ type PlateAuction {
 
 type PlateListing {
   id: Int!
-  isOpenForPrice: Boolean
+  isOpenForPrice: Boolean!
   offers: [Offer!]!
-  settlePrice: Float
+  settlePrice: Float!
 }
 
 enum PlatePurpose {
@@ -169,6 +151,7 @@ enum PlatePurpose {
 enum PlateStatus {
   APPROVED
   DECLINE
+  IN_AUCTION
   PENDING
   SOLD
 }
@@ -178,25 +161,11 @@ union PlateUnion = PlateAuction | PlateListing
 type Query {
   countries(countryCode: String): [Country!]!
   findAllBids(where: FilterBidInput!): [Bid!]!
+  me: User!
   plate(findPlateInput: FindPlateInput!): Plate!
   plates(where: FilterPlateInput): [Plate!]!
   user(where: FindUserInput!): User
   users(where: FilterUserInput): [User!]!
-}
-
-input RegisterUserInput {
-  cityCode: String!
-  companyName: String!
-  countryCode: String!
-  email: String!
-  firstName: String!
-  lastName: String!
-  password: String!
-  phoneNumber: String!
-  postCode: String!
-  state: String!
-  streetAddress: String!
-  username: String!
 }
 
 input UpdateOfferInput {
@@ -204,10 +173,15 @@ input UpdateOfferInput {
   status: OfferStatus
 }
 
+input UpdatePlateInput {
+  status: PlateStatus!
+}
+
 type User {
   city: String!
   companyName: String!
   country: String!
+  drivingLicense: String
   email: String!
   firstName: String!
   id: Int!

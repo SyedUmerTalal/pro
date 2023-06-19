@@ -1,27 +1,28 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import {
-  ValidateIf,
   IsNotEmpty,
   IsBoolean,
   IsNumber,
   Min,
   IsArray,
+  IsPositive,
 } from 'class-validator';
 import Offer from 'src/offer/object/offer.object';
 
 @ObjectType()
 export default class PlateListing {
   @Field(() => Int)
+  @IsNotEmpty()
+  @IsPositive()
+  @IsNumber()
   readonly id: number;
 
-  @Field(() => Boolean, { nullable: true })
-  @ValidateIf((dto) => typeof dto.settlePrice === 'undefined')
+  @Field(() => Boolean, { defaultValue: false })
   @IsNotEmpty()
   @IsBoolean()
-  readonly isOpenForPrice?: boolean | null;
+  readonly isOpenForPrice: boolean;
 
-  @Field(() => Float, { nullable: true, defaultValue: 0 })
-  @ValidateIf((dto) => typeof dto.isOpenForPrice === 'undefined')
+  @Field(() => Float, { defaultValue: 0 })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   @IsNotEmpty()

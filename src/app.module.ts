@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { MulterModule } from '@nestjs/platform-express';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { CountryModule } from './country/country.module';
@@ -11,14 +10,17 @@ import { PlateModule } from './plate/plate.module';
 import { AuctionModule } from './auction/auction.module';
 import { BidModule } from './bid/bid.module';
 import { OfferModule } from './offer/offer.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { WinnerModule } from './winner/winner.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
-    MulterModule.register({
-      dest: './uploads',
-    }),
+    ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -32,6 +34,7 @@ import { OfferModule } from './offer/offer.module';
     AuctionModule,
     BidModule,
     OfferModule,
+    WinnerModule,
   ],
 })
 export class AppModule {}

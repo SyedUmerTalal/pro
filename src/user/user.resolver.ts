@@ -8,11 +8,13 @@ import {
 } from '@nestjs/graphql';
 import { User } from './model/user.model';
 import { UserService } from './user.service';
-import { RegisterUserInput } from './dto/user-register.input';
 import FilterUserInput from './dto/filter-user.input';
 import { CityService } from 'src/common/services/city.service';
 import { CountryService } from 'src/country/country.service';
 import FindUserInput from './dto/find-user.input';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -22,9 +24,18 @@ export class UserResolver {
     private readonly countryService: CountryService,
   ) {}
 
-  @Mutation(() => User)
-  registerUser(@Args('data') registerUserInput: RegisterUserInput) {
-    return this.userService.create(registerUserInput);
+  // @Mutation(() => User)
+  // registerUser(
+  //   @Args('data') registerUserInput: RegisterUserInput,
+  //   @Args('drivingLicense') drivingLicense: FileUpload,
+  // ) {
+  //   return this.userService.create(registerUserInput);
+  // }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => User, { name: 'me' })
+  me(@CurrentUser('userId') userId: number) {
+    return this.userService.findOne({ id: userId });
   }
 
   @Query(() => [User], { name: 'users' })

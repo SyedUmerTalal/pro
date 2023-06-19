@@ -1,4 +1,4 @@
-import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import {
   IsNumber,
   IsPositive,
@@ -15,11 +15,6 @@ export default class Auction {
   @IsNumber()
   @IsNotEmpty()
   id: number;
-
-  @Field(() => Float)
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @IsNotEmpty()
-  startingPrice: number;
 
   @Field(() => Date)
   @IsDate()

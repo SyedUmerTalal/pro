@@ -4,6 +4,7 @@ import { PrismaService } from 'src/common/services/prisma.service';
 import { UserResolver } from './user.resolver';
 import { CityService } from 'src/common/services/city.service';
 import { CountryService } from 'src/country/country.service';
+import { UserController } from './user.controller';
 
 @Module({
   providers: [
@@ -12,7 +13,9 @@ import { CountryService } from 'src/country/country.service';
     UserResolver,
     CityService,
     CountryService,
+    UserController,
   ],
   exports: [UserService],
+  controllers: [UserController],
 })
 export class UserModule {}

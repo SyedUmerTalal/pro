@@ -10,6 +10,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
@@ -86,6 +87,11 @@ export class User {
 
   @HideField()
   countryCode: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  drivingLicense?: string;
 }
 
 registerEnumType(UserStatus, {

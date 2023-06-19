@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -8,22 +9,23 @@ datasource db {
 }
 
 model User {
-  id            Int        @id @default(autoincrement()) @map("user_id")
-  username      String     @unique
-  email         String     @unique
-  password      String
-  firstName     String     @map("first_name")
-  lastName      String     @map("last_name")
-  companyName   String?    @map("company_name")
-  streetAddress String     @map("street_address")
-  state         String
-  postCode      String     @map("post_code")
-  phoneNumber   String     @unique @map("phone_number")
-  cityCode      String     @map("city_code")
-  countryCode   String     @map("country_code")
-  status        UserStatus @default(PENDING)
-  createdAt     DateTime   @default(now()) @map("created_at")
-  updatedAt     DateTime   @updatedAt @map("updated_at")
+  id             Int        @id @default(autoincrement()) @map("user_id")
+  username       String     @unique
+  email          String     @unique
+  password       String
+  firstName      String     @map("first_name")
+  lastName       String     @map("last_name")
+  companyName    String?    @map("company_name")
+  streetAddress  String     @map("street_address")
+  state          String
+  postCode       String     @map("post_code")
+  phoneNumber    String     @unique @map("phone_number")
+  cityCode       String     @map("city_code")
+  countryCode    String     @map("country_code")
+  status         UserStatus @default(PENDING)
+  drivingLicense String?    @map("driving_license_uri")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
 
   country Country @relation(fields: [countryCode], references: [code])
   city    City    @relation(fields: [cityCode], references: [code])
@@ -59,12 +61,13 @@ model City {
 
 model Plate {
   id          Int          @id @default(autoincrement())
-  combination String       @unique
+  combination String       @unique @db.VarChar(4)
   askingPrice Decimal      @default(0) @map("asking_price") @db.Decimal(18, 2)
   comments    String?
   purpose     PlatePurpose
   userId      Int          @map("user_id")
   status      PlateStatus  @default(PENDING)
+  numberPlate String
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
@@ -73,6 +76,7 @@ model Plate {
   plateListing PlateListing?
   plateAuction PlateAuction?
 
+  @@fulltext([combination])
   @@map("plates")
 }
 
@@ -90,8 +94,8 @@ model PlateListing {
 model PlateAuction {
   id        Int      @id @default(autoincrement())
   isReserve Boolean  @default(false) @map("is_reserve")
-  Plate     Plate?   @relation(fields: [id], references: [id])
-  Auction   Auction?
+  plate     Plate?   @relation(fields: [id], references: [id])
+  auction   Auction?
 
   @@map("plates_auctions")
 }
@@ -102,10 +106,9 @@ enum PlatePurpose {
 }
 
 model Auction {
-  id            Int      @id @default(autoincrement())
-  plateId       Int      @unique @map("plate_id")
-  startingPrice Decimal  @default(0) @map("starting_price") @db.Decimal(18, 2)
-  endAt         DateTime @map("end_at")
+  id      Int      @id @default(autoincrement())
+  plateId Int      @unique @map("plate_id")
+  endAt   DateTime @map("end_at") @db.Timestamp()
 
   plateAuction PlateAuction @relation(fields: [plateId], references: [id])
 
@@ -161,6 +164,7 @@ enum UserStatus {
 enum PlateStatus {
   PENDING
   APPROVED
+  IN_AUCTION
   DECLINE
   SOLD
 }

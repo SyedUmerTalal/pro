@@ -1,52 +1,59 @@
 import {
   Field,
   Float,
-  HideField,
   Int,
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
 import {
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
   IsString,
+  MaxLength,
+  Min,
 } from 'class-validator';
 import { User } from 'src/user/model/user.model';
-import { PlatePurpose, PlateStatus } from '@prisma/client';
 import { PlateUnion } from './plate.union';
+import { PlatePurpose, PlateStatus } from '@prisma/client';
 
 @ObjectType()
 export default class Plate {
   @Field(() => Int)
   @IsNotEmpty()
+  @IsPositive()
+  @IsNumber()
   readonly id: number;
 
   @Field()
   @IsNotEmpty()
   @IsString()
+  @MaxLength(4)
   readonly combination: string;
 
   @Field(() => Float)
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @IsPositive()
   @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
   readonly askingPrice: number;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  readonly comments: string;
+  readonly comments?: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  readonly numberPlate: string;
 
   @Field(() => PlateStatus)
   @IsEnum(PlateStatus)
   @IsNotEmpty()
   readonly status: PlateStatus;
-
-  @HideField()
-  readonly userId: number;
 
   @Field(() => PlatePurpose)
   @IsNotEmpty()
@@ -59,6 +66,11 @@ export default class Plate {
 
   @Field(() => PlateUnion, { nullable: true })
   readonly detail?: typeof PlateUnion;
+
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  @IsDate()
+  updatedAt: Date;
 }
 
 registerEnumType(PlateStatus, {
