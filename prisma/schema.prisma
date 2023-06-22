@@ -85,7 +85,7 @@ model PlateListing {
   isOpenForPrice Boolean @default(false) @map("open_for_price")
   settlePrice    Decimal @default(0) @map("settle_price") @db.Decimal(18, 2)
 
-  plate  Plate   @relation(fields: [id], references: [id])
+  plate  Plate   @relation(fields: [id], references: [id], onDelete: Cascade)
   offers Offer[]
 
   @@map("plates_listings")
@@ -94,7 +94,7 @@ model PlateListing {
 model PlateAuction {
   id        Int      @id @default(autoincrement())
   isReserve Boolean  @default(false) @map("is_reserve")
-  plate     Plate?   @relation(fields: [id], references: [id])
+  plate     Plate?   @relation(fields: [id], references: [id], onDelete: Cascade)
   auction   Auction?
 
   @@map("plates_auctions")

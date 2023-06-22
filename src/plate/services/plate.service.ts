@@ -151,6 +151,8 @@ export class PlateService {
   }
 
   delete(findPlateInput: FindPlateInput) {
-    return this.prismaService.plate.delete({ where: findPlateInput });
+    return this.prismaService.plate.delete({
+      where: { id: findPlateInput.id },
+    });
   }
 }
