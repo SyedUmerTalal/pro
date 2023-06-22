@@ -4,6 +4,7 @@ import CreateOfferInput from './inputs/create-offer.input';
 import FilterOfferInput from './inputs/filter-offer.input';
 import UpdateOfferInput from './inputs/update-offer.input';
 import FindOfferInput from './inputs/find-offer.input';
+import { off } from 'process';
 
 @Injectable()
 export class OfferService {
@@ -19,8 +20,11 @@ export class OfferService {
     });
   }
 
-  findAll(filterOfferInput: FilterOfferInput) {
-    return this.prismaService.offer.findMany({ where: filterOfferInput });
+  async findAll(filterOfferInput: FilterOfferInput) {
+    const offers = await this.prismaService.offer.findMany({
+      where: filterOfferInput,
+    });
+    return offers;
   }
 
   async max(filterOfferInput: FilterOfferInput) {

@@ -14,12 +14,14 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
 import UpdateOfferInput from './inputs/update-offer.input';
 import FindOfferInput from './inputs/find-offer.input';
+import { PlateService } from 'src/plate/services/plate.service';
 
 @Resolver(() => Offer)
 export class OfferResolver {
   constructor(
     private readonly offerService: OfferService,
     private readonly userService: UserService,
+    private readonly plateService: PlateService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -47,5 +49,12 @@ export class OfferResolver {
   @ResolveField()
   user(@Parent() offer: Offer) {
     return this.userService.findOne({ id: offer.userId });
+  }
+
+  @ResolveField()
+  plate(@Parent() offer: Offer) {
+    return this.plateService.findOne({
+      findPlateInput: { id: offer.plateListingId },
+    });
   }
 }

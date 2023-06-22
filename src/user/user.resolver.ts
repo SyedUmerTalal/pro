@@ -15,6 +15,7 @@ import FindUserInput from './dto/find-user.input';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { OfferService } from 'src/offer/offer.service';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -22,6 +23,7 @@ export class UserResolver {
     private readonly userService: UserService,
     private readonly cityService: CityService,
     private readonly countryService: CountryService,
+    private readonly offerService: OfferService,
   ) {}
 
   // @Mutation(() => User)
@@ -68,5 +70,10 @@ export class UserResolver {
   async country(@Parent() user: User) {
     const country = await this.countryService.findOne(user.countryCode);
     return country.name;
+  }
+
+  @ResolveField()
+  offers(@Parent() user: User) {
+    return this.offerService.findAll({ userId: user.id });
   }
 }

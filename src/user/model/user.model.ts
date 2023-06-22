@@ -7,6 +7,7 @@ import {
 } from '@nestjs/graphql';
 import { UserStatus } from '@prisma/client';
 import {
+  IsArray,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -14,6 +15,7 @@ import {
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
+import Offer from 'src/offer/object/offer.object';
 
 @ObjectType()
 export class User {
@@ -92,6 +94,11 @@ export class User {
   @IsOptional()
   @IsString()
   drivingLicense?: string;
+
+  @Field(() => [Offer], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  offers: Offer[];
 }
 
 registerEnumType(UserStatus, {
