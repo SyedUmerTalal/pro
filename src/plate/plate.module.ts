@@ -8,6 +8,7 @@ import { PlateService } from './services/plate.service';
 import { PlateController } from './plate.controller';
 import PlateListingService from './services/plate-listing.service';
 import PlateAuctionService from './services/plate-auction.service';
+import { PlateListingResolver } from './resolvers/plate-listing.resolver';
 
 @Module({
   providers: [
@@ -19,6 +20,7 @@ import PlateAuctionService from './services/plate-auction.service';
     OfferService,
     PlateListingService,
     PlateAuctionService,
+    PlateListingResolver,
   ],
   controllers: [PlateController],
 })

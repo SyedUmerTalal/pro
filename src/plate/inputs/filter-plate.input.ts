@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, HideField, InputType, Int } from '@nestjs/graphql';
 import {
   IsEnum,
   IsNumber,
@@ -37,15 +37,18 @@ export default class FilterPlateInput {
   @IsOptional()
   @IsNumber()
   @IsPositive()
-  readonly characterCount: number;
+  readonly characterCount?: number;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  readonly term: string;
+  readonly term?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
-  readonly pattern: string;
+  readonly pattern?: string;
+
+  @HideField()
+  readonly userId?: number;
 }

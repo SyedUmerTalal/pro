@@ -5,7 +5,7 @@ import { UserResolver } from './user.resolver';
 import { CityService } from 'src/common/services/city.service';
 import { CountryService } from 'src/country/country.service';
 import { UserController } from './user.controller';
-import { OfferService } from 'src/offer/offer.service';
+import { PlateService } from 'src/plate/services/plate.service';
 
 @Module({
   providers: [
@@ -15,7 +15,7 @@ import { OfferService } from 'src/offer/offer.service';
     CityService,
     CountryService,
     UserController,
-    OfferService,
+    PlateService,
   ],
   exports: [UserService],
   controllers: [UserController],

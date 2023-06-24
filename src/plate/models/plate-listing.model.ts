@@ -28,7 +28,7 @@ export default class PlateListing {
   @IsNotEmpty()
   settlePrice?: number;
 
-  @Field(() => [Offer])
+  @Field(() => [Offer], { nullable: true })
   @IsArray()
-  offers: Offer[];
+  offers?: Offer[];
 }

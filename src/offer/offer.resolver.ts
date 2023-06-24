@@ -50,11 +50,4 @@ export class OfferResolver {
   user(@Parent() offer: Offer) {
     return this.userService.findOne({ id: offer.userId });
   }
-
-  @ResolveField()
-  plate(@Parent() offer: Offer) {
-    return this.plateService.findOne({
-      findPlateInput: { id: offer.plateListingId },
-    });
-  }
 }

@@ -53,8 +53,7 @@ export class PlateResolver {
     if (plate.purpose === PlatePurpose.LISTING) {
       return this.plateListingService.findOne(plate.id);
     } else {
-      const auctionPlate = await this.plateAuctionService.findOne(plate.id);
-      return auctionPlate;
+      return this.plateAuctionService.findOne(plate.id);
     }
   }
 }

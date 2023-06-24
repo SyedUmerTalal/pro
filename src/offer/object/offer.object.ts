@@ -7,16 +7,7 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { OfferStatus } from '@prisma/client';
-import { Expose } from 'class-transformer';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  Min,
-} from 'class-validator';
-import Plate from 'src/plate/models/plate.model';
+import { IsEnum, IsNotEmpty, IsNumber, IsPositive, Min } from 'class-validator';
 import { User } from 'src/user/model/user.model';
 
 @ObjectType()
@@ -55,10 +46,6 @@ export default class Offer {
 
   @Field(() => User)
   user: User;
-
-  @Field(() => Plate, { nullable: true })
-  @IsOptional()
-  plate: Plate;
 }
 
 registerEnumType(OfferStatus, {

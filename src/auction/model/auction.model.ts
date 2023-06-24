@@ -16,7 +16,7 @@ export default class Auction {
   @IsNotEmpty()
   id: number;
 
-  @Field(() => Date)
+  @Field()
   @IsDate()
   @IsNotEmpty()
   endAt: Date;

@@ -105,7 +105,6 @@ type Offer {
   counter: Float!
   currentOffer: Float!
   id: Int!
-  plate: Plate
   price: Float!
   status: OfferStatus!
   user: User!
@@ -140,7 +139,7 @@ type PlateAuction {
 type PlateListing {
   id: Int!
   isOpenForPrice: Boolean!
-  offers: [Offer!]!
+  offers: [Offer!]
   settlePrice: Float!
 }
 
@@ -187,8 +186,8 @@ type User {
   firstName: String!
   id: Int!
   lastName: String!
-  offers: [Offer!]
   phoneNumber: String!
+  plates: [Plate!]
   postCode: String!
   state: String!
   status: UserStatus!

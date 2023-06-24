@@ -15,7 +15,7 @@ import {
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
-import Offer from 'src/offer/object/offer.object';
+import Plate from 'src/plate/models/plate.model';
 
 @ObjectType()
 export class User {
@@ -95,10 +95,10 @@ export class User {
   @IsString()
   drivingLicense?: string;
 
-  @Field(() => [Offer], { nullable: true })
+  @Field(() => [Plate], { nullable: true })
   @IsArray()
   @IsOptional()
-  offers: Offer[];
+  plates: Plate[];
 }
 
 registerEnumType(UserStatus, {
