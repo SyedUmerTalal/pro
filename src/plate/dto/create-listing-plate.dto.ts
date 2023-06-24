@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -26,6 +27,7 @@ export default class CreateListingPlateDto {
 
   @IsBoolean()
   @IsNotEmpty()
+  @Transform(({ value }) => value === 'true')
   isOpenForPrice: boolean;
 
   @IsNumber()

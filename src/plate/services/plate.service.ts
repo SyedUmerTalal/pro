@@ -107,6 +107,7 @@ export class PlateService {
         combination: {
           contains: filterPlateInput.term,
         },
+        userId: filterPlateInput.userId,
       },
     });
 
