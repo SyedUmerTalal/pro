@@ -16,6 +16,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PlateService } from 'src/plate/services/plate.service';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -75,5 +76,13 @@ export class UserResolver {
   @ResolveField()
   plates(@Parent() user: User) {
     return this.plateService.findAll({ userId: user.id });
+  }
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => User)
+  updateUser(
+    @Args('data') updateUserInput: UpdateUserInput,
+    @CurrentUser('userId') userId: number,
+  ) {
+    return this.userService.update(updateUserInput, userId);
   }
 }

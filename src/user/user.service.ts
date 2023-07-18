@@ -5,6 +5,7 @@ import FilterUserInput from './dto/filter-user.input';
 import FindUserInput from './dto/find-user.input';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UserService {
@@ -47,9 +48,12 @@ export class UserService {
         {
           OR: findUserInput,
         },
-        {
-          status: UserStatus.APPROVED,
-        },
+
+        //for login both status
+        // {
+        //   status: UserStatus.APPROVED,
+        // },
+        //end
       ],
     };
 
@@ -57,7 +61,7 @@ export class UserService {
       where: userWhereInput,
     });
   }
-
+  
   async remove(findUserInput: FindUserInput) {
     return await this.prismaService.user.delete({
       where: findUserInput,
@@ -72,6 +76,15 @@ export class UserService {
     return await this.prismaService.user.update({
       where: findUserInput,
       data: userUpdateInput,
+    });
+  }
+
+  update(updateUserInput: UpdateUserInput, userId: number) {
+    return this.prismaService.user.update({
+      where: {
+        id:userId
+      },
+      data: updateUserInput,
     });
   }
 }

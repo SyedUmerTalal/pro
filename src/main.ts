@@ -6,9 +6,12 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { PrismaClientExceptionFilter } from './common/exceptions/prisma-client-exception.filter';
 
+
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const { httpAdapter } = app.get(HttpAdapterHost);
+
 
   const assetsDirectory = join(__dirname, '..', '../uploads');
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
@@ -20,6 +23,8 @@ async function bootstrap() {
   );
   app.useStaticAssets(assetsDirectory);
   app.enableCors();
+
+
 
   const config = new DocumentBuilder().setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, config);

@@ -99,6 +99,7 @@ type Mutation {
   removeUser(where: FindUserInput!): User!
   updateOffer(data: UpdateOfferInput!, where: FindOfferInput!): Offer!
   updatePlate(data: UpdatePlateInput!, where: FindPlateInput!): Plate!
+  updateUser(data: UpdateUserInput!): User!
 }
 
 type Offer {
@@ -175,6 +176,14 @@ input UpdateOfferInput {
 
 input UpdatePlateInput {
   status: PlateStatus!
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  postCode: String
+  state: String
+  streetAddress: String
 }
 
 type User {
